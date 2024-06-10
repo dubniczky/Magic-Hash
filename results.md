@@ -2,6 +2,7 @@
 
 Python MD5 = 32s
 Go MD5 = 27s
+Go MD5 8 threads = 6s
 
 ## Results
 

@@ -4,27 +4,29 @@ import (
     "crypto/md5"
 	"strings"
     "fmt"
+	"os"
+	"sync"
 )
 
-func nextSequence(s string) string {
+func addSequence(s string, n int) string {
 	alphabet := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	maxIndex := len(alphabet) - 1
-
 	runes := []rune(s)
 
-	for i := len(runes) - 1; i >= 0; i-- {
-		idx := strings.IndexRune(alphabet, runes[i])
-		if idx == maxIndex {
-			runes[i] = rune(alphabet[0])
-		} else {
-			runes[i] = rune(alphabet[idx+1])
-			break
+	for n > 0 {
+		for i := len(runes) - 1; i >= 0; i-- {
+			idx := strings.IndexRune(alphabet, runes[i])
+			if idx == maxIndex {
+				runes[i] = rune(alphabet[0])
+				if i == 0 {
+					runes = append([]rune{rune(alphabet[0])}, runes...)
+				}
+			} else {
+				runes[i] = rune(alphabet[idx+1])
+				break
+			}
 		}
-	}
-
-	// Check if all characters are '0', if so, add another '0' at the beginning
-	if strings.Repeat(string(alphabet[0]), len(runes)) == string(runes) {
-		runes = append([]rune{rune(alphabet[0])}, runes...)
+		n--
 	}
 
 	return string(runes)
@@ -39,8 +41,9 @@ func isNumeric(s string) bool {
     return true
 }
 
-func main() {
-    postfix := "0"
+func findMagicHash(offset int) {
+	postfix := addSequence("0", offset)
+
     for {
         str := fmt.Sprintf("dubniczky-%s", postfix)
         h := md5.New()
@@ -48,10 +51,19 @@ func main() {
         md5_hash := fmt.Sprintf("%x", h.Sum(nil))
         if md5_hash[:2] == "0e" && isNumeric(md5_hash[2:]) {
             fmt.Printf("%s -> %s\n", str, md5_hash)
-			break
+			os.Exit(0)
         }
 
-        postfix = nextSequence(postfix)
+        postfix = addSequence(postfix, offset)
     }
 }
 
+func main() {
+	var wg sync.WaitGroup
+    for i := 0; i < 8; i++ {
+		wg.Add(1)
+		go findMagicHash(i)
+	}
+
+	wg.Wait()
+}
