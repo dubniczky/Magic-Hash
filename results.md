@@ -1,3 +1,7 @@
+## Speed
+
+Python MD5 = 32s
+Go MD5 = 27s
 
 ## Results
 
