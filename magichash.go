@@ -2,9 +2,11 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
 	"fmt"
 	"hash"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -62,14 +64,25 @@ func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, thread
 }
 
 func main() {
-	var threads int = 8
-	var prefix string = "dubniczky-"
+	var args []string = os.Args[1:]
+	threads, _ := strconv.Atoi(args[2])
+	var prefix string = args[1]
+	var hasher func() hash.Hash
+
+	switch args[0] {
+	case "md5":
+		hasher = md5.New
+		break
+	case "sha1":
+		hasher = sha1.New
+		break
+	}
 
 	var wg sync.WaitGroup
 	for i := 0; i < threads; i++ {
 		wg.Add(1)
 		//go findMagicHash(md5.New, prefix, i+1, threads)
-		go findMagicHash(md5.New, prefix, i+1, threads)
+		go findMagicHash(hasher, prefix, i+1, threads)
 	}
 	wg.Wait() // Called so the program does not close immediately
 }
