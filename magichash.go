@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
 	"hash"
 	"os"
@@ -75,6 +76,9 @@ func main() {
 		break
 	case "sha1":
 		hasher = sha1.New
+		break
+	case "sha256":
+		hasher = sha256.New
 		break
 	}
 
