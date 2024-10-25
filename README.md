@@ -23,7 +23,9 @@ So if the hash match is not validated using the `password_verify()` or `hash_equ
 The chances of generating a magic hash exponentially decreases with the bit size of the hash digest. It can be calculated as follows:
 
 $b$ = number of bits
-$$ \frac{1}{16} * \frac{1}{16} * \frac{10}{16}^{\frac{b}{4}-2} $$
+```math
+\frac{1}{16} * \frac{1}{16} * \frac{10}{16}^{\frac{b}{4}-2}
+```
 
 In the case of a 128 bit hash (eg: MD5), the chance for a magic hash is: 
 
