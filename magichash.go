@@ -71,6 +71,9 @@ func main() {
 	var hasher func() hash.Hash
 
 	switch args[0] {
+	case "crc32":
+		hasher = crc32New
+		break
 	case "md5":
 		hasher = md5.New
 		break

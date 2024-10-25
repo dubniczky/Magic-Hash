@@ -43,5 +43,6 @@ The go solution however, completed in 27 seconds, which is about a 16% improveme
 
 |Algorithm|Input|Digest|Time|
 |-|-|-|-|
+|CRC32/IEEE|`dubniczky-cs`|`0e984686`|0.24s|
 |MD5|`dubniczky-37HAY`|`0e167783116409945604446462415162`|6s|
 |SHA1|`dubniczky-k6yW74`|`0e42764555227832861957804727564640004574`|31.5m|
