@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-func addSequence(s string, n int) string {
+func incrementStringSequence(s string, n int) string {
 	alphabet := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	maxIndex := len(alphabet) - 1
 	runes := []rune(s)
@@ -46,7 +46,7 @@ func isNumeric(s string) bool {
 }
 
 func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, threads int) {
-	postfix := addSequence("0", offset)
+	postfix := incrementStringSequence("0", offset)
 	for {
 		// Create hash
 		str := fmt.Sprintf("%s%s", prefix, postfix)
@@ -60,7 +60,7 @@ func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, thread
 			os.Exit(0)
 		}
 
-		postfix = addSequence(postfix, threads)
+		postfix = incrementStringSequence(postfix, threads)
 	}
 }
 
@@ -77,6 +77,9 @@ func main() {
 	case "sha1":
 		hasher = sha1.New
 		break
+	case "sha224":
+		hasher = sha256.New224
+		break
 	case "sha256":
 		hasher = sha256.New
 		break
@@ -85,8 +88,7 @@ func main() {
 	var wg sync.WaitGroup
 	for i := 0; i < threads; i++ {
 		wg.Add(1)
-		//go findMagicHash(md5.New, prefix, i+1, threads)
 		go findMagicHash(hasher, prefix, i+1, threads)
 	}
-	wg.Wait() // Called so the program does not close immediately
+	wg.Wait()
 }
