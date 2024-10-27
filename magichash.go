@@ -16,30 +16,30 @@ const PasswordSequenceAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJ
 
 func incrementStringSequence(s string, n int) string {
 	alphabet := PasswordSequenceAlphabet
-	alphabetMaxIndex := len(alphabet) - 1
+	characters := len(alphabet)
 
 	// We consider an empty string the first character in the alphabet
 	if s == "" {
-		s = string(PasswordSequenceAlphabet[0])
+		s = string(alphabet[0])
 	}
 	runes := []rune(s)
 
-	for n > 0 {
-		for i := len(runes) - 1; i >= 0; i-- {
-			idx := strings.IndexRune(alphabet, runes[i])
-			if idx == -1 {
-				return "" // Invalid character in string
-			} else if idx == alphabetMaxIndex {
-				runes[i] = rune(alphabet[0])
-				if i == 0 {
-					runes = append([]rune{rune(alphabet[0])}, runes...)
-				}
-			} else {
-				runes[i] = rune(alphabet[idx+1])
-				break
-			}
+	remainder := n
+	for i := len(runes) - 1; i >= 0; i-- {
+		idx := strings.IndexRune(alphabet, runes[i])
+		if idx == -1 {
+			return "" // Invalid character in string
 		}
-		n--
+		runes[i] = rune(alphabet[(idx+remainder)%characters])
+		remainder = (idx + remainder) / characters
+	}
+
+	// If there are any remainders after the last character we start adding more at the beginning
+	// We use remainder-1, because in this case we also allow the first character to count as different
+	// than when it's not present, line "01" != "1". Otherwise we'd miss all sequences that start with a 0.
+	for remainder > 0 {
+		runes = append([]rune{rune(alphabet[(remainder-1)%characters])}, runes...)
+		remainder /= characters
 	}
 
 	return string(runes)

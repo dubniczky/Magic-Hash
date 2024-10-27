@@ -15,6 +15,13 @@ var expectedStringSequences = []stringSequenceTestPair{
 	{"0", 1, "1"},
 	{"0", 15, "f"},
 	{"Z", 1, "00"},
+	{"Z", 3, "02"},
+	{"X3", 128, "Z7"},
+	{"ZZ", 62, "00Z"},
+	{"A5j", 0, "A5j"},
+	{"A5j", 1, "A5k"},
+	{"A5j", 2, "A5l"},
+	{"A5j", 3, "A5m"},
 }
 
 func TestPasswordSequencing(t *testing.T) {
