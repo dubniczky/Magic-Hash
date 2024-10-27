@@ -12,15 +12,24 @@ import (
 	"sync"
 )
 
+const PasswordSequenceAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 func incrementStringSequence(s string, n int) string {
-	alphabet := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	maxIndex := len(alphabet) - 1
+	alphabet := PasswordSequenceAlphabet
+	alphabetMaxIndex := len(alphabet) - 1
+
+	// We consider an empty string the first character in the alphabet
+	if s == "" {
+		s = string(PasswordSequenceAlphabet[0])
+	}
 	runes := []rune(s)
 
 	for n > 0 {
 		for i := len(runes) - 1; i >= 0; i-- {
 			idx := strings.IndexRune(alphabet, runes[i])
-			if idx == maxIndex {
+			if idx == -1 {
+				return "" // Invalid character in string
+			} else if idx == alphabetMaxIndex {
 				runes[i] = rune(alphabet[0])
 				if i == 0 {
 					runes = append([]rune{rune(alphabet[0])}, runes...)
