@@ -17,14 +17,17 @@ const PasswordSequenceAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJ
 func incrementStringSequence(s string, n int) string {
 	alphabet := PasswordSequenceAlphabet
 	characters := len(alphabet)
+	var runes []rune
+	var remainder int
 
 	// We consider an empty string the first character in the alphabet
 	if s == "" {
-		s = string(alphabet[0])
+		runes = []rune{rune(alphabet[0])}
+	} else {
+		runes = []rune(s)
 	}
-	runes := []rune(s)
 
-	remainder := n
+	remainder = n
 	for i := len(runes) - 1; i >= 0; i-- {
 		idx := strings.IndexRune(alphabet, runes[i])
 		if idx == -1 {
@@ -54,7 +57,7 @@ func isNumeric(s string) bool {
 	return true
 }
 
-func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, threads int) {
+func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, step int) {
 	postfix := incrementStringSequence("0", offset)
 	for {
 		// Create hash
@@ -69,7 +72,7 @@ func findMagicHash(algorithm func() hash.Hash, prefix string, offset int, thread
 			os.Exit(0)
 		}
 
-		postfix = incrementStringSequence(postfix, threads)
+		postfix = incrementStringSequence(postfix, step)
 	}
 }
 
