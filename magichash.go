@@ -98,6 +98,9 @@ func main() {
 	case "sha256":
 		hasher = sha256.New
 		break
+	default:
+		fmt.Println("Invalid algorithm")
+		os.Exit(1)
 	}
 
 	var wg sync.WaitGroup
